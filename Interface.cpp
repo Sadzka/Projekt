@@ -2,12 +2,12 @@
 
 void MyMenu()
 {
-	stack_init();
+    stack_init();
 
-	int select;
-	while (1)
-	{
-		printf( "[0] Add object\n"
+    int select;
+    while (1)
+    {
+        printf( "[0] Add object\n"
                 "[1] Print all objects\n"
                 "[3] Get first element\n"
                 "[4] Save stack to File\n"
@@ -15,16 +15,16 @@ void MyMenu()
                 "[6] Free stack\n"
                 "[7] Exit\n");
 
-		scanf("%d", &select);
+        scanf("%d", &select);
 
-		switch (select)
-		{
-		case 0:
-			AddObject();
-			break;
-		case 1:
+        switch (select)
+        {
+        case 0:
+            AddObject();
+            break;
+        case 1:
             PrintAllObjects();
-			break;
+            break;
         case 3:
             GetFirstElement();
             break;
@@ -34,36 +34,36 @@ void MyMenu()
         case 5:
             LoadFromFile();
             break;
-		case 6:
-			FreeStack();
-			break;
-		case 7:
-			Exit();
-			break;
+        case 6:
+            FreeStack();
+            break;
+        case 7:
+            Exit();
+            break;
 
-		default:
-			error(ERROR_UNKNOWN_OPERATION);
+        default:
+            error(ERROR_UNKNOWN_OPERATION);
 
-		};
-		system("pause");
-		system("cls");
-	}
+        };
+        system("pause");
+        system("cls");
+    }
 }
 
 void AddObject()
 {
-	int typ;
+    int typ;
 
-	printf( "Types:\n"
+    printf( "Types:\n"
             "[0] MyStudent\n");
-	scanf("%d", &typ);
+    scanf("%d", &typ);
 
-	switch (typ)
-	{
-	case DATA_TYPE_STUDENT:
+    switch (typ)
     {
-	    MY_STUDENT * student = (MY_STUDENT*)malloc(sizeof(MY_STUDENT));
-	    if(!student)
+    case DATA_TYPE_STUDENT:
+    {
+        MY_STUDENT * student = (MY_STUDENT*)malloc(sizeof(MY_STUDENT));
+        if(!student)
             error(ERROR_MEM_ALOC_ERROR);
 
 
@@ -75,31 +75,31 @@ void AddObject()
             error(ERROR_MEM_ALOC_ERROR);
 
 
-		tmp->ptr_fun_print = MY_STUDENT_print;
-		tmp->ptr_fun_free = MY_STUDENT_free;
-		tmp->ptr_fun_save = MY_STUDENT_save;
-		tmp->ptr_fun_load = MY_STUDENT_load;
-		tmp->typ = DATA_TYPE_STUDENT;
+        tmp->ptr_fun_print = MY_STUDENT_print;
+        tmp->ptr_fun_free = MY_STUDENT_free;
+        tmp->ptr_fun_save = MY_STUDENT_save;
+        tmp->ptr_fun_load = MY_STUDENT_load;
+        tmp->typ = DATA_TYPE_STUDENT;
         tmp->data = (void *)student;
 
         stack_push(tmp);
         printf("Dodano rekord.\n");
-		break;
+        break;
     }
-	default:
-		error(ERROR_UNKNOWN_OBJECT);
-		break;
-	};
+    default:
+        error(ERROR_UNKNOWN_OBJECT);
+        break;
+    };
 }
 
 void PrintAllObjects()
 {
-	stack_print();
+    stack_print();
 }
 
 void FreeStack()
 {
-	stack_free();
+    stack_free();
 }
 
 void GetFirstElement()
@@ -124,11 +124,11 @@ void FindElement()
 
 void Exit()
 {
-	printf("Exit...\n");
-	stack_free();
+    printf("Exit...\n");
+    stack_free();
 
-	system("pause");
-	exit(1);
+    system("pause");
+    exit(1);
 }
 
 
@@ -153,11 +153,12 @@ void LoadFromFile()
         if(option != 'y')
             return;
 
-		stack_free();
+        stack_free();
     }
     char filename[64];
     printf("Podaj nazwe pliku: ");
     fflush(stdin);
     gets(filename);
     stack_load(filename);
+    printf("Pomyslnie wczytano z pliku: %s\n", filename);
 }
