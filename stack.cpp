@@ -239,3 +239,29 @@ void stack_load(char * filename)
 		fclose(file);
 	file = NULL;
 }
+
+int stack_find(void * data, DATA_TYPE type)
+{
+    switch(type)
+    {
+    case DATA_TYPE_STUDENT:
+        MY_STUDENT * student = (MY_STUDENT*)data;
+
+        Stack * tmp = head;
+        while(tmp != NULL)
+        {
+            MY_STUDENT * student2 = (MY_STUDENT*)tmp->data;
+            if( student2->rok == student->rok
+            &&  student2->kierunek == student->kierunek
+            &&  strcmp(student2->nazwisko, student->nazwisko) == 0)
+            {
+                return 1;
+            }
+            tmp = (Stack*)tmp->prev;
+        }
+
+        break;
+    //default: //zabezpieczone w interface
+    }
+    return 0;
+}

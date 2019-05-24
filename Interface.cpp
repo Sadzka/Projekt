@@ -13,7 +13,8 @@ void MyMenu()
                 "[4] Save stack to File\n"
                 "[5] Load stack from File\n"
                 "[6] Free stack\n"
-                "[7] Exit\n");
+                "[7] Find object\n"
+                "[8] Exit\n");
 
         scanf("%d", &select);
 
@@ -38,6 +39,9 @@ void MyMenu()
             FreeStack();
             break;
         case 7:
+            FindObject();
+            break;
+        case 8:
             Exit();
             break;
 
@@ -131,7 +135,6 @@ void Exit()
     exit(1);
 }
 
-
 void SaveToFile()
 {
     char filename[64];
@@ -161,4 +164,41 @@ void LoadFromFile()
     gets(filename);
     stack_load(filename);
     printf("Pomyslnie wczytano z pliku: %s\n", filename);
+}
+
+void FindObject()
+{
+    printf("Jakiego typu objekt chcesz znalezc?\n");
+    printf( "Types:\n"
+            "[0] MyStudent\n");
+
+    int typ;
+    scanf("%d", &typ);
+    switch(typ)
+    {
+    case DATA_TYPE_STUDENT:
+    {
+        MY_STUDENT * student = (MY_STUDENT*)malloc(sizeof(MY_STUDENT));
+        if(!student)
+            error(ERROR_MEM_ALOC_ERROR);
+
+        MY_STUDENT_init(student);
+        MY_STUDENT_input(student);
+
+        if( stack_find(student, DATA_TYPE_STUDENT) )
+            printf("Objekt instnieje w stosie.\n");
+        else
+            printf("Objekt nie instnieje w stosie.\n");
+
+        if(student)
+            free(student);
+
+        break;
+    }
+
+
+    default:
+        error(ERROR_UNKNOWN_OBJECT);
+        break;
+    }
 }

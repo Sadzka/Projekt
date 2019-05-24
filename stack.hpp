@@ -27,7 +27,9 @@ void stack_print();
 Stack * stack_pop();
 
 void stack_fileerror(__int64 * filedesc, FILE * file, ERRORS blad); // dodatkowa obsluga czyszczenia pamieci podczas bledu
-
 void stack_save(char * filename);
 void stack_load(char * filename);
+
+int stack_find(void * data, DATA_TYPE type);
+
 int stack_getSize();
