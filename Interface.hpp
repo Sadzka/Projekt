@@ -15,3 +15,4 @@ void Exit();
 void SaveToFile();
 void LoadFromFile();
 void FindObject();
+

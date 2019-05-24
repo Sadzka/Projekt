@@ -33,3 +33,4 @@ void stack_load(char * filename);
 int stack_find(void * data, DATA_TYPE type);
 
 int stack_getSize();
+
