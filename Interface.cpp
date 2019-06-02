@@ -75,7 +75,7 @@ void AddObject()
     case DATA_TYPE_STUDENT:
     {
 /*
-        MY_STUDENT * student = (MY_STUDENT*)malloc(sizeof(MY_STUDENT));
+        MY_STUDENT * student = MY_STUDENT_create()
         if(!student)
             error(ERROR_MEM_ALOC_ERROR);
 
