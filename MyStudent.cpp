@@ -5,6 +5,8 @@
 MY_STUDENT * MY_STUDENT_create()
 {
 	MY_STUDENT * ret = (MY_STUDENT*)malloc( sizeof(MY_STUDENT) );
+	if(ret);
+        	error(ERROR_MEM_ALOC_ERROR);
 	return ret;
 }
 
