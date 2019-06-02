@@ -75,7 +75,7 @@ void AddObject()
     case DATA_TYPE_STUDENT:
     {
 /*
-        MY_STUDENT * student = MY_STUDENT_create()
+        MY_STUDENT * (MY_STUDENT*)malloc(sizeof(MY_STUDENT));
         if(!student)
             error(ERROR_MEM_ALOC_ERROR);
 
@@ -87,8 +87,7 @@ void AddObject()
         //Stack * tmp = (Stack*)malloc(sizeof(Stack));
         //if(!tmp)
         //    error(ERROR_MEM_ALOC_ERROR);
-
-        MY_STUDENT * data = (MY_STUDENT*)malloc(sizeof(MY_STUDENT));
+        MY_STUDENT * data = MY_STUDENT_create()
         if(!data)
             error(ERROR_MEM_ALOC_ERROR);
 
