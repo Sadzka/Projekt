@@ -2,6 +2,12 @@
 
 #pragma warning (disable : 4996)
 
+MY_STUDENT * MY_STUDENT_create()
+{
+	MY_STUDENT * ret = (MY_STUDENT*)malloc( sizeof(MY_STUDENT) );
+	return ret;
+}
+
 void MY_STUDENT_init(MY_STUDENT *ptr)
 {
     ptr->nazwisko = NULL;
