@@ -1,5 +1,7 @@
 #include "Interface.hpp"
 
+#pragma warning (disable : 4996)
+
 void MyMenu()
 {
     stack_init();
@@ -54,6 +56,12 @@ void MyMenu()
     }
 }
 
+//SF Tu tez Pan zbyt duzo wyciaga "do gory".
+//Ja by "oposcil" tworzenie obiektu MY_STUDENT do obslugi studenta,
+//a tworzenie kolejnego elementu stosu - do obslugi stosu.
+//Wtedy interfejs staje bardziej niezalezny od kontenera i od danych,
+//a obsluga odpowiednich obiektow znajduje sie na swoim miejscu.
+
 void AddObject()
 {
     int typ;
@@ -66,6 +74,7 @@ void AddObject()
     {
     case DATA_TYPE_STUDENT:
     {
+/*
         MY_STUDENT * student = (MY_STUDENT*)malloc(sizeof(MY_STUDENT));
         if(!student)
             error(ERROR_MEM_ALOC_ERROR);
@@ -73,20 +82,27 @@ void AddObject()
 
         MY_STUDENT_init(student);
         MY_STUDENT_input(student);
+*/
+		////SF Nie jest to naturalnie, ze interfejs tworzy obiekt stosu. To stos powinien tworzyc swoj wlasny obiekt.
+        //Stack * tmp = (Stack*)malloc(sizeof(Stack));
+        //if(!tmp)
+        //    error(ERROR_MEM_ALOC_ERROR);
 
-        Stack * tmp = (Stack*)malloc(sizeof(Stack));
-        if(!tmp)
+        MY_STUDENT * data = (MY_STUDENT*)malloc(sizeof(MY_STUDENT));
+        if(!data)
             error(ERROR_MEM_ALOC_ERROR);
 
+        MY_STUDENT_init( data );
+        MY_STUDENT_input( data );
 
-        tmp->ptr_fun_print = MY_STUDENT_print;
-        tmp->ptr_fun_free = MY_STUDENT_free;
-        tmp->ptr_fun_save = MY_STUDENT_save;
-        tmp->ptr_fun_load = MY_STUDENT_load;
-        tmp->typ = DATA_TYPE_STUDENT;
-        tmp->data = (void *)student;
+        //tmp->ptr_fun_print = MY_STUDENT_print;
+        //tmp->ptr_fun_free = MY_STUDENT_free;
+        //tmp->ptr_fun_save = MY_STUDENT_save;
+        //tmp->ptr_fun_load = MY_STUDENT_load;
+        //tmp->typ = DATA_TYPE_STUDENT;
+        //tmp->data = (void *)student;
 
-        stack_push(tmp);
+        stack_push(data, DATA_TYPE_STUDENT);
         printf("Dodano rekord.\n");
         break;
     }
@@ -108,6 +124,11 @@ void FreeStack()
 
 void GetFirstElement()
 {
+	//SF To tez nie sprawa interfejsu "wyciagac caly stos do gory".
+	//Tu trzeba by bylo stworzyc funkcje wydruku pierwszego elementu w obsludze stosu.
+
+/*
+
     Stack * tmp = stack_pop();
     if(tmp)
     {
@@ -119,11 +140,8 @@ void GetFirstElement()
     {
         error(ERROR_NO_ELEMENTS);
     }
-}
-
-void FindElement()
-{
-    /// \todo
+*/
+    stack_printLast();
 }
 
 void Exit()
@@ -138,11 +156,12 @@ void Exit()
 void SaveToFile()
 {
     char filename[64];
-    printf("Podaj nazwe pliku: ");
-    fflush(stdin);
-    gets(filename);
+    printf("Podaj nazwe pliku:\n");
+    
+	clear_stdio();
+	gets_s(filename, 63);
+
     stack_save(filename);
-    printf("Pomyslnie zapisano do pliku: %s\n", filename);
 }
 
 void LoadFromFile()
@@ -151,7 +170,7 @@ void LoadFromFile()
     {
         char option;
         printf("Stos nie jest pusty, czy chcesz wczytac dane i zastapic istniejace? (y/n): ");
-        fflush(stdin);
+		clear_stdio();
         scanf("%c", &option);
         if(option != 'y')
             return;
@@ -161,9 +180,11 @@ void LoadFromFile()
     char filename[64];
     printf("Podaj nazwe pliku: ");
     fflush(stdin);
-    gets(filename);
+
+	clear_stdio();
+		gets_s(filename);
+
     stack_load(filename);
-    printf("Pomyslnie wczytano z pliku: %s\n", filename);
 }
 
 void FindObject()

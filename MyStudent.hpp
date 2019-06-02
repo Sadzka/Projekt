@@ -29,9 +29,11 @@ struct MY_STUDENT
     size_t size; //nazwisko.length()
 };
 
-void MY_STUDENT_init(MY_STUDENT *ptr);
-void MY_STUDENT_input(MY_STUDENT *ptr);
-void MY_STUDENT_print(void * data);
-void MY_STUDENT_free(void ** data);
-int MY_STUDENT_save(void * data, FILE * file);
-int MY_STUDENT_load(void * data, FILE * file);
+void MY_STUDENT_init(MY_STUDENT* ptr);
+void MY_STUDENT_input(MY_STUDENT* ptr);
+void MY_STUDENT_print(void* data);
+void MY_STUDENT_free(void** data);
+int MY_STUDENT_save(void* data, FILE * file);
+int MY_STUDENT_load(void* data, FILE * file);
+
+int MY_STUDENT_compare(void* data1, void* data2);

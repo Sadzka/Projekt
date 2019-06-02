@@ -10,7 +10,6 @@ void AddObject();
 void PrintAllObjects();
 void FreeStack();
 void GetFirstElement();
-void FindElement();
 void Exit();
 void SaveToFile();
 void LoadFromFile();

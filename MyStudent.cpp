@@ -1,8 +1,10 @@
 #include "MyStudent.hpp"
 
+#pragma warning (disable : 4996)
+
 void MY_STUDENT_init(MY_STUDENT *ptr)
 {
-    ptr->nazwisko = "Unknown";
+    ptr->nazwisko = NULL;
     ptr->rok = -1;
     ptr->kierunek = Unknown;
 
@@ -44,7 +46,7 @@ void MY_STUDENT_print(void * data)
     printf( "\n"
             "Nazwisko: %s\n"
             "Rok: %d\n"
-            "Kierunek: %s\n", ptr->nazwisko, ptr->rok, NazwaKierunku[ptr->kierunek]);
+            "Kierunek: %s\n\n", ptr->nazwisko, ptr->rok, NazwaKierunku[ptr->kierunek]);
 }
 
 void MY_STUDENT_free(void ** data)
@@ -67,6 +69,9 @@ void MY_STUDENT_free(void ** data)
 int MY_STUDENT_save(void * data, FILE * file)
 {
     MY_STUDENT * student = (MY_STUDENT*)data;
+	DATA_TYPE typ = DATA_TYPE_STUDENT;
+	if (fwrite(&typ, sizeof(DATA_TYPE), 1, file) != 1)
+		return 0;
 
     //zapis danych z struktury
     if (fwrite(student, sizeof(MY_STUDENT), 1, file) != 1)
@@ -96,4 +101,17 @@ int MY_STUDENT_load(void * data, FILE * file)
     printf("nazw: %s\n", student->nazwisko );
 */
     return 1;
+}
+
+int MY_STUDENT_compare(void* data1, void* data2)
+{
+	MY_STUDENT* typ1 = (MY_STUDENT*)data1;
+	MY_STUDENT* typ2 = (MY_STUDENT*)data2;
+
+	if ( typ1->rok == typ2->rok
+	&&   typ1->kierunek == typ2->kierunek
+	&&   strcmp( typ1->nazwisko, typ2->nazwisko ) == 0)
+		return 1;
+
+	return 0;
 }

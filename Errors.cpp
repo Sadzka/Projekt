@@ -1,7 +1,10 @@
+#include "stdafx.h"
 #include "Errors.hpp"
 #include "stack.hpp"
+#include <string.h>
+#include <stdlib.h>
 
-static char *error_str_tab[] = {
+const char *error_str_tab[7] = {
 	"EBlad alokacji pamieci!",
 	"NBrak elementow do pobrania!",
 	"NNieznany typ obiektu, dodawanie przerwane!",

@@ -1,6 +1,9 @@
 #include "stack.hpp"
 
 #include "MyStudent.hpp"
+
+#pragma warning (disable : 4996)
+
 Stack * head;
 static int elements = 0;
 
@@ -24,7 +27,7 @@ void stack_free()
     printf("Usunieto %d elementow.\n", ile);
     elements = 0;
 }
-
+/*
 void stack_push(Stack * object)
 {
     if(head == NULL)
@@ -38,19 +41,42 @@ void stack_push(Stack * object)
         head = object;
     }
     elements++;
-
-    //MY_STUDENT * stud = (MY_STUDENT*)head->data;
-    //printf("Nazwisko: %d\n", strlen(stud->nazwisko) );
-    //printf("Nazwisko: %s\n", stud->nazwisko );
-    //printf("Head: %d\n", head);
-    //printf("Prev: %d\n", head->prev);
 }
+*/
+void stack_push(void* data, DATA_TYPE typ) //typ danych potrzebny jest do przypisania fukcji, nie jest zapisywany w stack'u
+{ 
+	Stack * object = (Stack*)malloc(sizeof(Stack));
+	if(!object)
+	    error(ERROR_MEM_ALOC_ERROR);
 
+	if (head == NULL)
+		object->prev = nullptr;
+	else
+		object->prev = head;
+
+	head = object;
+	elements++;
+
+	head->data = data;
+
+	switch (typ)
+	{
+	case DATA_TYPE_STUDENT:
+		head->ptr_fun_print = MY_STUDENT_print;
+		head->ptr_fun_free = MY_STUDENT_free;
+		head->ptr_fun_save = MY_STUDENT_save;
+		head->ptr_fun_load = MY_STUDENT_load;
+		head->ptr_fun_compare = MY_STUDENT_compare;
+		break;
+	default:
+		error(ERROR_UNKNOWN_DATA_TYPE);
+		break;
+	}
+}
 void stack_print()
 {
     Stack * tmp = head;
     int ile = 0;
-    //printf("Head: %d\n", head);
     while(tmp != NULL)
     {
         (*tmp->ptr_fun_print)(tmp->data);
@@ -64,15 +90,6 @@ Stack * stack_pop()
 {
     if(head != NULL)
     {
-        /*
-        Stack * temp = head;
-        void * ret = head->data;
-        head = (Stack*)head->prev;
-        free(temp);
-        elements--;
-        return ret;
-        */
-
         Stack * ret = head;
         head = (Stack*)head->prev;
         elements--;
@@ -116,18 +133,17 @@ void stack_save(char * filename)
 
 
 	//rezerwacja miejsca w pliku dla file_descr
-	fseek(file, (elements + 1) * sizeof(__int64), SEEK_CUR);
+	_fseeki64(file, (elements + 1) * sizeof(__int64), SEEK_CUR);
 
 	//zapis danych
-    int it;
+    //int it; //SF warning przy kompilacji!
+	unsigned it;
     for (it = 0; it < elements; ++it)
     {
         file_desc[it] = ftell(file);
         Stack * object = (Stack*)stack_pop();
 
         //pierwsze zapisuje typ obiektu
-        if (fwrite( &object->typ, sizeof(DATA_TYPE), 1, file) != 1)
-            stack_fileerror(file_desc, file, ERROR_FAILED_DATA_SAVE);
         if(!(*object->ptr_fun_save)(object->data, file) )
             stack_fileerror(file_desc, file, ERROR_FAILED_DATA_SAVE);
 
@@ -137,7 +153,7 @@ void stack_save(char * filename)
 
 	//zapisujemy wskazniki pozycji dla kazdego obiektu
 	file_desc[it] = ftell(file);
-    fseek(file, sizeof(unsigned int), SEEK_SET);
+    _fseeki64(file, sizeof(unsigned int), SEEK_SET);
 	if (fwrite(file_desc, sizeof(__int64), elements + 1, file) != elements + 1)
         stack_fileerror(file_desc, file, ERROR_FAILED_DATA_SAVE);
 
@@ -150,6 +166,8 @@ void stack_save(char * filename)
 	if (file_desc)
 		free(file_desc);
 	file_desc = NULL;
+
+	printf("Zapisano pomyslnie\n");
 }
 
 void stack_load(char * filename)
@@ -183,28 +201,32 @@ void stack_load(char * filename)
 		rec = elements - it - 1;
 		rec_len = file_desc[rec + 1] - file_desc[rec];
 
-		fseek(file, file_desc[rec], SEEK_SET);
+		//SF fseek nie poradzi z dlugimi plikami. Trzeba fseek64.
+		_fseeki64(file, file_desc[rec], SEEK_SET);
 
-		Stack * object = (Stack*)malloc(sizeof(Stack));
+		//Stack * object = (Stack*)malloc(sizeof(Stack));
 		//wczytanie typu danych
-		if(fread(&object->typ, sizeof(DATA_TYPE), 1, file) != 1)
+
+		void* data = NULL;
+		DATA_TYPE typ;
+		if(fread(&typ, sizeof(DATA_TYPE), 1, file) != 1)
             stack_fileerror(file_desc, file, ERROR_FAILED_DATA_SAVE);
 
         //ustawienie funkcji wczytywania do odpowiedniego typu danych
-		switch(object->typ)
+		switch(typ)
 		{
         case DATA_TYPE_STUDENT:
-            object->data = (MY_STUDENT*)malloc(sizeof(MY_STUDENT));
-            object->ptr_fun_print = MY_STUDENT_print;
-            object->ptr_fun_free = MY_STUDENT_free;
-            object->ptr_fun_save = MY_STUDENT_save;
-            object->ptr_fun_load = MY_STUDENT_load;
+
+            data = malloc(sizeof(MY_STUDENT));
+			MY_STUDENT_load(data, file);
             break;
+
         default:
             error(ERROR_UNKNOWN_DATA_TYPE);
 		}
 
         //wczytanie danych do okreslonego typu
+		/*
         if( !(*object->ptr_fun_load)(object->data, file) )
         {
             if(object->data)
@@ -214,21 +236,10 @@ void stack_load(char * filename)
 
             return;
         }
+		*/
 
-        MY_STUDENT * student = (MY_STUDENT*)object->data;
-        stack_push(object);
-
-		/*
-		if(fread(&tab[rec], sizeof(tab[rec]), 1, file) != 1)
-			MyExit(file, tab, file_desc);
-
-		tab[rec].model = (char *)malloc(tab[rec].len*sizeof(char));
-		if(!tab[rec].model)
-			MyExit(file, tab, file_desc);
-
-		if(fread(tab[rec].model, sizeof(char), tab[rec].len, file) != tab[rec].len)
-			MyExit(file, tab, file_desc);
-        */
+		//SF W kontenerze nie powinno byc zadnego typu danych, na przyklad, MY_STUDENT
+        stack_push(data, typ);
 	}
 
 	if (file_desc)
@@ -242,14 +253,28 @@ void stack_load(char * filename)
 
 int stack_find(void * data, DATA_TYPE type)
 {
+	//SF W kontenerze nie powinno byc zadnego typu danych.
+	//MY_STUDENT * student = (MY_STUDENT*)data; - to trzeba przeniesc do danych.
+
+	Stack* tmp = head;
+	while (tmp != NULL)
+	{
+		if ((tmp->ptr_fun_compare)(tmp->data, data))
+			return 1;
+
+		tmp = (Stack*)tmp->prev;
+	}
+	/*
     switch(type)
     {
+		////SF kontener nic nie zna o typach danych
     case DATA_TYPE_STUDENT:
-        MY_STUDENT * student = (MY_STUDENT*)data;
+        //MY_STUDENT * student = (MY_STUDENT*)data;
 
-        Stack * tmp = head;
-        while(tmp != NULL)
-        {
+		//MY_STUDENT* student = (MY_STUDENT*)data;
+        
+			//SF Kontener nie powinien wiedziec nic o typach danych
+			
             MY_STUDENT * student2 = (MY_STUDENT*)tmp->data;
             if( student2->rok == student->rok
             &&  student2->kierunek == student->kierunek
@@ -257,12 +282,25 @@ int stack_find(void * data, DATA_TYPE type)
             {
                 return 1;
             }
-            tmp = (Stack*)tmp->prev;
-        }
+			
 
         break;
     //default: //zabezpieczone w interface
     }
+	*/
     return 0;
 }
 
+void stack_printLast()
+{
+    if(elements != 0)
+    {
+        if(head)
+        {
+            printf("Ostatni element: ");
+            (*head->ptr_fun_print)(head->data);
+        }
+    }
+    else error(ERROR_NO_ELEMENTS);
+   
+}
