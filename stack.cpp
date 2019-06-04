@@ -211,7 +211,7 @@ void stack_load(char * filename)
 		{
         case DATA_TYPE_STUDENT:
 
-            data = malloc(sizeof(MY_STUDENT));
+            data = MY_STUDENT_create();
 			MY_STUDENT_load(data, file);
             break;
 

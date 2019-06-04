@@ -75,7 +75,7 @@ void AddObject()
     case DATA_TYPE_STUDENT:
     {
 /*
-        MY_STUDENT * student = (MY_STUDENT*)malloc(sizeof(MY_STUDENT));
+        MY_STUDENT * (MY_STUDENT*)malloc(sizeof(MY_STUDENT));
         if(!student)
             error(ERROR_MEM_ALOC_ERROR);
 
@@ -97,6 +97,7 @@ void AddObject()
 */
 
 		MY_STUDENT* data = MY_STUDENT_create();
+
         if(!data)
             error(ERROR_MEM_ALOC_ERROR);
 
@@ -158,7 +159,7 @@ void SaveToFile()
 {
     char filename[64];
     printf("Podaj nazwe pliku:\n");
-    
+
 	clear_stdio();
 	gets_s(filename, 63);
 
