@@ -25,7 +25,9 @@ void stack_init();
 void stack_free();
 
 //void stack_push(Stack * object);
-void stack_push(void * data, DATA_TYPE typ);
+void stack_push(void* data, PrintObject fun_print, FreeObject fun_free,
+	SaveObject fun_save, LoadObject fun_load, CompareObject fun_compare);
+
 void stack_print();
 Stack * stack_pop();
 

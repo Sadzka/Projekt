@@ -29,6 +29,7 @@ struct MY_STUDENT
     size_t size; //nazwisko.length()
 };
 
+MY_STUDENT* MY_STUDENT_create();
 void MY_STUDENT_init(MY_STUDENT* ptr);
 void MY_STUDENT_input(MY_STUDENT* ptr);
 void MY_STUDENT_print(void* data);

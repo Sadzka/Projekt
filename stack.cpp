@@ -2,6 +2,7 @@
 
 #include "MyStudent.hpp"
 
+typedef void (*PrintObject)(void*);
 #pragma warning (disable : 4996)
 
 Stack * head;
@@ -43,7 +44,8 @@ void stack_push(Stack * object)
     elements++;
 }
 */
-void stack_push(void* data, DATA_TYPE typ) //typ danych potrzebny jest do przypisania fukcji, nie jest zapisywany w stack'u
+void stack_push(void * data, PrintObject fun_print, FreeObject fun_free,
+	SaveObject fun_save, LoadObject fun_load, CompareObject fun_compare)
 { 
 	Stack * object = (Stack*)malloc(sizeof(Stack));
 	if(!object)
@@ -58,20 +60,12 @@ void stack_push(void* data, DATA_TYPE typ) //typ danych potrzebny jest do przypi
 	elements++;
 
 	head->data = data;
+	head->ptr_fun_print = fun_print;
+	head->ptr_fun_free = fun_free;
+	head->ptr_fun_load = fun_load;
+	head->ptr_fun_save = fun_save;
+	head->ptr_fun_compare = fun_compare;
 
-	switch (typ)
-	{
-	case DATA_TYPE_STUDENT:
-		head->ptr_fun_print = MY_STUDENT_print;
-		head->ptr_fun_free = MY_STUDENT_free;
-		head->ptr_fun_save = MY_STUDENT_save;
-		head->ptr_fun_load = MY_STUDENT_load;
-		head->ptr_fun_compare = MY_STUDENT_compare;
-		break;
-	default:
-		error(ERROR_UNKNOWN_DATA_TYPE);
-		break;
-	}
 }
 void stack_print()
 {
@@ -225,21 +219,9 @@ void stack_load(char * filename)
             error(ERROR_UNKNOWN_DATA_TYPE);
 		}
 
-        //wczytanie danych do okreslonego typu
-		/*
-        if( !(*object->ptr_fun_load)(object->data, file) )
-        {
-            if(object->data)
-                free(object->data);
-            if(object)
-                free(object);
-
-            return;
-        }
-		*/
 
 		//SF W kontenerze nie powinno byc zadnego typu danych, na przyklad, MY_STUDENT
-        stack_push(data, typ);
+        stack_push(data, MY_STUDENT_print, MY_STUDENT_free, MY_STUDENT_save, MY_STUDENT_load, MY_STUDENT_compare);
 	}
 
 	if (file_desc)

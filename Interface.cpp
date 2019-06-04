@@ -82,27 +82,28 @@ void AddObject()
 
         MY_STUDENT_init(student);
         MY_STUDENT_input(student);
-*/
-		////SF Nie jest to naturalnie, ze interfejs tworzy obiekt stosu. To stos powinien tworzyc swoj wlasny obiekt.
-        //Stack * tmp = (Stack*)malloc(sizeof(Stack));
-        //if(!tmp)
-        //    error(ERROR_MEM_ALOC_ERROR);
 
-        MY_STUDENT * data = (MY_STUDENT*)malloc(sizeof(MY_STUDENT));
+		////SF Nie jest to naturalnie, ze interfejs tworzy obiekt stosu. To stos powinien tworzyc swoj wlasny obiekt.
+        Stack * tmp = (Stack*)malloc(sizeof(Stack));
+        if(!tmp)
+            error(ERROR_MEM_ALOC_ERROR);
+
+        tmp->ptr_fun_print = MY_STUDENT_print;
+        tmp->ptr_fun_free = MY_STUDENT_free;
+        tmp->ptr_fun_save = MY_STUDENT_save;
+        tmp->ptr_fun_load = MY_STUDENT_load;
+        tmp->typ = DATA_TYPE_STUDENT;
+        tmp->data = (void *)student;
+*/
+
+		MY_STUDENT* data = MY_STUDENT_create();
         if(!data)
             error(ERROR_MEM_ALOC_ERROR);
 
         MY_STUDENT_init( data );
         MY_STUDENT_input( data );
 
-        //tmp->ptr_fun_print = MY_STUDENT_print;
-        //tmp->ptr_fun_free = MY_STUDENT_free;
-        //tmp->ptr_fun_save = MY_STUDENT_save;
-        //tmp->ptr_fun_load = MY_STUDENT_load;
-        //tmp->typ = DATA_TYPE_STUDENT;
-        //tmp->data = (void *)student;
-
-        stack_push(data, DATA_TYPE_STUDENT);
+		stack_push(data, MY_STUDENT_print, MY_STUDENT_free, MY_STUDENT_save, MY_STUDENT_load, MY_STUDENT_compare);
         printf("Dodano rekord.\n");
         break;
     }
@@ -199,7 +200,7 @@ void FindObject()
     {
     case DATA_TYPE_STUDENT:
     {
-        MY_STUDENT * student = (MY_STUDENT*)malloc(sizeof(MY_STUDENT));
+		MY_STUDENT* student = MY_STUDENT_create();
         if(!student)
             error(ERROR_MEM_ALOC_ERROR);
 
