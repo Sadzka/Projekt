@@ -247,7 +247,7 @@ void stack_load(char * filename)
 	file = NULL;
 }
 
-void stack_find(void * data, int typ, DATA_TYPE type)
+void stack_find(void * data, int typ)
 {
 	//SF W kontenerze nie powinno byc zadnego typu danych.
 	//MY_STUDENT * student = (MY_STUDENT*)data; - to trzeba przeniesc do danych.

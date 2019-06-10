@@ -35,7 +35,7 @@ void stack_fileerror(__int64 * filedesc, FILE * file, ERRORS blad); // dodatkowa
 void stack_save(char * filename);
 void stack_load(char * filename);
 
-void stack_find(void * data, int typ, DATA_TYPE type);
+void stack_find(void * data, int typ);
 
 int stack_getSize();
 void stack_getLast();

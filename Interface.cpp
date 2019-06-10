@@ -217,7 +217,7 @@ void FindObject()
 			char nazwisko[255];
 			printf("Podaj nazwisko: ");
 			scanf("%s", nazwisko);
-			stack_find(nazwisko, kryterium, DATA_TYPE_STUDENT);
+			stack_find(nazwisko, kryterium);
 		}
 		else if (kryterium == 1)
 		{
@@ -232,14 +232,14 @@ void FindObject()
 				printf("Niepoprawny kierunek!\n");
 				return;
 			}
-			stack_find(&kierunek, kryterium, DATA_TYPE_STUDENT);
+			stack_find(&kierunek, kryterium);
 		}
 		else if (kryterium == 2)
 		{
 			printf("Podaj rok: ");
 			int rok;
 			scanf("%d", &rok);
-			stack_find(&rok, kryterium, DATA_TYPE_STUDENT);
+			stack_find(&rok, kryterium);
 		}
 		else
 		{
