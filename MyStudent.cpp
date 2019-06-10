@@ -7,6 +7,7 @@ MY_STUDENT* MY_STUDENT_create()
 	MY_STUDENT * ret = (MY_STUDENT*)malloc(sizeof(MY_STUDENT));
 	if (!ret)
 		error(ERROR_MEM_ALOC_ERROR);
+	return ret;
 }
 
 void MY_STUDENT_init(MY_STUDENT *ptr)
@@ -110,15 +111,24 @@ int MY_STUDENT_load(void * data, FILE * file)
     return 1;
 }
 
-int MY_STUDENT_compare(void* data1, void* data2)
+int MY_STUDENT_compare(void* object, void* value, int typ)
 {
-	MY_STUDENT* typ1 = (MY_STUDENT*)data1;
-	MY_STUDENT* typ2 = (MY_STUDENT*)data2;
-
-	if ( typ1->rok == typ2->rok
-	&&   typ1->kierunek == typ2->kierunek
-	&&   strcmp( typ1->nazwisko, typ2->nazwisko ) == 0)
-		return 1;
+	MY_STUDENT* obj = (MY_STUDENT*)object;
+	if (typ == 0)
+	{
+		if (strcmp( obj->nazwisko, (char*)value) == 0)
+			return 1;
+	}
+	else if (typ == 1)
+	{
+		if(obj->kierunek == *(int*)value )
+			return 1;
+	}
+	else if (typ == 2)
+	{
+		if (obj->rok == *(int*)value)
+			return 1;
+	}
 
 	return 0;
 }

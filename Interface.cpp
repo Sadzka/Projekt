@@ -75,7 +75,7 @@ void AddObject()
     case DATA_TYPE_STUDENT:
     {
 /*
-        MY_STUDENT * (MY_STUDENT*)malloc(sizeof(MY_STUDENT));
+        MY_STUDENT * student = (MY_STUDENT*)malloc(sizeof(MY_STUDENT));
         if(!student)
             error(ERROR_MEM_ALOC_ERROR);
 
@@ -97,7 +97,6 @@ void AddObject()
 */
 
 		MY_STUDENT* data = MY_STUDENT_create();
-
         if(!data)
             error(ERROR_MEM_ALOC_ERROR);
 
@@ -143,7 +142,7 @@ void GetFirstElement()
         error(ERROR_NO_ELEMENTS);
     }
 */
-    stack_printLast();
+    stack_getLast();
 }
 
 void Exit()
@@ -157,9 +156,15 @@ void Exit()
 
 void SaveToFile()
 {
+	if (stack_getSize() == 0)
+	{
+		error(ERROR_NULL_SIZE);
+		return;
+	}
+
     char filename[64];
     printf("Podaj nazwe pliku:\n");
-
+    
 	clear_stdio();
 	gets_s(filename, 63);
 
@@ -181,10 +186,9 @@ void LoadFromFile()
     }
     char filename[64];
     printf("Podaj nazwe pliku: ");
-    fflush(stdin);
 
 	clear_stdio();
-		gets_s(filename);
+	gets_s(filename);
 
     stack_load(filename);
 }
@@ -201,23 +205,50 @@ void FindObject()
     {
     case DATA_TYPE_STUDENT:
     {
-		MY_STUDENT* student = MY_STUDENT_create();
-        if(!student)
-            error(ERROR_MEM_ALOC_ERROR);
+		int kryterium;
+		printf("Wybierz kryterium?\n"
+			"[0] Nazwisko\n"
+			"[1] Kierunek\n"
+			"[2] Rok Studiow\n");
+		scanf("%d", &kryterium);
 
-        MY_STUDENT_init(student);
-        MY_STUDENT_input(student);
+		if (kryterium == 0)
+		{
+			char nazwisko[255];
+			printf("Podaj nazwisko: ");
+			scanf("%s", nazwisko);
+			stack_find(nazwisko, kryterium, DATA_TYPE_STUDENT);
+		}
+		else if (kryterium == 1)
+		{
+			int kierunek;
+			printf("Podaj kierunek \n"
+				   "[0] Fizyka\n"
+				   "[1] Matematyka\n"
+				   "[2] Informatyka\n");
+			scanf("%d", &kierunek);
+			if (kierunek < 0 || kierunek >= Kierunek::Unknown)
+			{
+				printf("Niepoprawny kierunek!\n");
+				return;
+			}
+			stack_find(&kierunek, kryterium, DATA_TYPE_STUDENT);
+		}
+		else if (kryterium == 2)
+		{
+			printf("Podaj rok: ");
+			int rok;
+			scanf("%d", &rok);
+			stack_find(&rok, kryterium, DATA_TYPE_STUDENT);
+		}
+		else
+		{
+			printf("Niepoprawne kryterium. \n");
+		}
 
-        if( stack_find(student, DATA_TYPE_STUDENT) )
-            printf("Objekt instnieje w stosie.\n");
-        else
-            printf("Objekt nie instnieje w stosie.\n");
 
-        if(student)
-            free(student);
-
-        break;
     }
+        break;
 
 
     default:

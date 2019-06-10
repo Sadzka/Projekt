@@ -2,6 +2,16 @@
 
 #include "MyStudent.hpp"
 
+//////SF po zapisie stosu do pliku zamykam program, 
+//uruchomiam jego ponownie, odczytuje stos z pliku i proboje jego wyswietlic.
+//Dostaje informacje o 0 elementach.
+
+////////SF
+//1. Przy pobieraniu ostatniego elementu ze stosu ten elment powinie by? wykre?lony ze stosu, a dane wy?wietlone na monitorze.
+//Pierwsze nie jest wykonane.
+//2. Poszukiwanie odbywa si? wed?ug pewnych kryteri?w.Je?li poszukujemy po nazwisku, to rok urodzenia oraz inne dane nas nie interesuj?.
+//Dalej, algorytm powinien odnale?? wszystkie wchodzenia i wyprowadzi? dane na monitor, a nie stwierdza?, odnaleziono lub nie.
+
 typedef void (*PrintObject)(void*);
 #pragma warning (disable : 4996)
 
@@ -67,6 +77,7 @@ void stack_push(void * data, PrintObject fun_print, FreeObject fun_free,
 	head->ptr_fun_compare = fun_compare;
 
 }
+
 void stack_print()
 {
     Stack * tmp = head;
@@ -107,6 +118,7 @@ void stack_fileerror(__int64 * filedesc, FILE * file, ERRORS blad)
 void stack_save(char * filename)
 {
     //otworzenie pliku
+
 	FILE *file = fopen(filename, "wb");
 	if (!file)
     {
@@ -210,19 +222,21 @@ void stack_load(char * filename)
 		switch(typ)
 		{
         case DATA_TYPE_STUDENT:
-
-            data = MY_STUDENT_create();
+			data = MY_STUDENT_create();
 			MY_STUDENT_load(data, file);
+			stack_push(data, MY_STUDENT_print, MY_STUDENT_free, MY_STUDENT_save, MY_STUDENT_load, MY_STUDENT_compare);
             break;
-
         default:
             error(ERROR_UNKNOWN_DATA_TYPE);
+			break;
 		}
 
 
 		//SF W kontenerze nie powinno byc zadnego typu danych, na przyklad, MY_STUDENT
-        stack_push(data, MY_STUDENT_print, MY_STUDENT_free, MY_STUDENT_save, MY_STUDENT_load, MY_STUDENT_compare);
+		//stack_push(data);
 	}
+
+	printf("Wczytano %d elementow. \n", elements);
 
 	if (file_desc)
 		free(file_desc);
@@ -233,19 +247,26 @@ void stack_load(char * filename)
 	file = NULL;
 }
 
-int stack_find(void * data, DATA_TYPE type)
+void stack_find(void * data, int typ, DATA_TYPE type)
 {
 	//SF W kontenerze nie powinno byc zadnego typu danych.
 	//MY_STUDENT * student = (MY_STUDENT*)data; - to trzeba przeniesc do danych.
 
 	Stack* tmp = head;
+	int ile = 0; //do wypisania ze elementu nie znaleziono
 	while (tmp != NULL)
 	{
-		if ((tmp->ptr_fun_compare)(tmp->data, data))
-			return 1;
-
+		if ((tmp->ptr_fun_compare)(tmp->data, data, typ))
+		{
+			tmp->ptr_fun_print(tmp->data);
+			ile++;
+		}
+		
 		tmp = (Stack*)tmp->prev;
 	}
+	if (ile == 0)
+		printf("Nie znaleziono zadnych elementow spelniajacych kryteria.\n");
+
 	/*
     switch(type)
     {
@@ -270,19 +291,18 @@ int stack_find(void * data, DATA_TYPE type)
     //default: //zabezpieczone w interface
     }
 	*/
-    return 0;
 }
 
-void stack_printLast()
+void stack_getLast()
 {
     if(elements != 0)
     {
-        if(head)
+		Stack* pop = stack_pop();
+        if(pop)
         {
             printf("Ostatni element: ");
-            (*head->ptr_fun_print)(head->data);
+            (pop->ptr_fun_print)(pop->data);
         }
     }
     else error(ERROR_NO_ELEMENTS);
-   
 }

@@ -36,5 +36,4 @@ void MY_STUDENT_print(void* data);
 void MY_STUDENT_free(void** data);
 int MY_STUDENT_save(void* data, FILE * file);
 int MY_STUDENT_load(void* data, FILE * file);
-
-int MY_STUDENT_compare(void* data1, void* data2);
+int MY_STUDENT_compare(void* object, void* value, int typ);

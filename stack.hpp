@@ -7,7 +7,7 @@ typedef void (*PrintObject)(void *);
 typedef void (*FreeObject)(void **);
 typedef int  (*SaveObject)(void *, FILE*);
 typedef int  (*LoadObject)(void *, FILE*);
-typedef int  (*CompareObject)(void*, void*);
+typedef int  (*CompareObject)(void*, void*, int);
 
 struct Stack
 {
@@ -35,8 +35,8 @@ void stack_fileerror(__int64 * filedesc, FILE * file, ERRORS blad); // dodatkowa
 void stack_save(char * filename);
 void stack_load(char * filename);
 
-int stack_find(void * data, DATA_TYPE type);
+void stack_find(void * data, int typ, DATA_TYPE type);
 
 int stack_getSize();
-void stack_printLast();
+void stack_getLast();
 

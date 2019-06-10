@@ -4,14 +4,15 @@
 #include <string.h>
 #include <stdlib.h>
 
-const char *error_str_tab[7] = {
+const char *error_str_tab[8] = {
 	"EBlad alokacji pamieci!",
 	"NBrak elementow do pobrania!",
 	"NNieznany typ obiektu, dodawanie przerwane!",
 	"NNieznana operacja!",
 	"NNie mozna otworzyc pliku!",
 	"EBlad zapisu danych do pliku!",
-	"ENieznany typ danych w pliku!"
+	"ENieznany typ danych w pliku!",
+	"NNie mozna zapisac pustego stosu!"
 };
 
 void error(enum ERRORS mess)
